@@ -113,4 +113,4 @@ if page == "💬 Ask Questions":
 elif page == "📄 Upload Document":
     
     st.header("📄 Upload Document")
-    st.write("Upload a PDF to add to the
+    st.write("Upload a PDF to add to the knowledge base")

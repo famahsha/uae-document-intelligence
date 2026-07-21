@@ -5,17 +5,19 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Connect to ChromaDB
+# Debug - check current directory
+print("Current directory:", os.getcwd())
+print("Files in rag/vectorstore:", os.listdir("rag/vectorstore") if os.path.exists("rag/vectorstore") else "PATH NOT FOUND")
+
 client = chromadb.PersistentClient(path="rag/vectorstore")
 
-# Try to get collection safely
 try:
     collection = client.get_collection("uae_documents")
+    print("✅ ChromaDB collection loaded successfully")
 except Exception as e:
-    print(f"ChromaDB error: {e}")
+    print(f"❌ ChromaDB error: {e}")
     collection = None
 
-# Connect to Gemini
 gemini = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
 
 def rag_agent(question: str) -> dict:
@@ -29,19 +31,14 @@ def rag_agent(question: str) -> dict:
             "source": "Error"
         }
     
-    # Step 1: Search ChromaDB
     results = collection.query(
         query_texts=[question],
         n_results=5
     )
     
-    # Step 2: Get pages
     pages = [m['page'] for m in results['metadatas'][0]]
-    
-    # Step 3: Combine content
     context = "\n\n".join(results['documents'][0])
     
-    # Step 4: Send to Gemini
     prompt = f"""You are a UAE Labour Law expert.
 Answer using only the content below.
 Use bullet points.
@@ -66,11 +63,6 @@ Question: {question}"""
         "pages": pages,
         "source": "UAE Labour Law PDF"
     }
-
-if __name__ == "__main__":
-    result = rag_agent("How many days annual leave?")
-    print(f"\nAnswer:\n{result['answer']}")
-
 
 
 

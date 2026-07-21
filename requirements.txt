@@ -1,0 +1,15 @@
+langchain
+langchain-community
+langgraph
+llama-index
+llama-index-core
+chromadb
+fastapi
+uvicorn
+streamlit
+mlflow
+python-dotenv
+pypdf
+pymupdf
+tavily-python
+google-genai
